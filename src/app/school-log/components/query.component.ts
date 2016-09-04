@@ -1,6 +1,7 @@
 
 import { Component, DoCheck, OnInit } from '@angular/core';
 import { Router, ROUTER_DIRECTIVES } from '@angular/router';
+import { SystemMessagesSubcomponent } from '../../shared/components/sub/system-messages.subcomponent';
 import { AuthCheckAbstractComponent } from '../../auth/abstract/auth-check.abstract-component';
 import { AuthService } from '../../auth/lib/auth.service';
 import { EditEntryService } from '../lib/edit-entry.service';
@@ -17,7 +18,7 @@ declare var window: any;
 
 @Component({
     moduleId: module.id,
-    directives: [ROUTER_DIRECTIVES],
+    directives: [ ROUTER_DIRECTIVES, SystemMessagesSubcomponent ],
     selector: 'school-log-query',
     templateUrl: '../static/html/query.component.html'
 })
@@ -100,8 +101,15 @@ export class QueryComponent extends AuthCheckAbstractComponent implements DoChec
             '/app/school-log/static/html/pdfexport.helper.html?token=' +
             this.authService.getToken ();
         url += ( '&children=' + this.query.children.join ( ',' ) );
-        url += ( '&dateMin=' + this.query.dateMin );
-        url += ( '&dateMax=' + this.query.dateMax );
+        console.log ( this.query.dateMin );
+        if ( this.query.dateMin )
+            url += ( '&dateMin=' + this.query.dateMin );
+        else url += ( '&dateMin=' + moment ( '1970-01-01' )
+            .format ( 'YYYY-MM-DD' ) );
+        if ( this.query.dateMax )
+            url += ( '&dateMax=' + this.query.dateMax );
+        else url += ( '&dateMax=' + moment ()
+            .format ( 'YYYY-MM-DD' ) );
         url += ( '&hoursMin=' + this.query.hoursMin );
         url += ( '&hoursMax=' + this.query.hoursMax );
         url += ( '&subject=' + this.query.subject );

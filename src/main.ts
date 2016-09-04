@@ -5,7 +5,8 @@ import { HashLocationStrategy, LocationStrategy } from
     '@angular/common';
 import { AppComponent, environment, appRouterProviders } from './app/';
 import { AuthService } from './app/auth/';
-import { LoggerService } from './app/shared/';
+import { LoggerService } from './app/shared/lib/logger.service';
+import { SystemMessagesService } from './app/shared/lib/system-messages.service';
 import { EditEntryService, EditStudentService, SchoolLogService } from
     './app/school-log/';
 
@@ -21,5 +22,6 @@ bootstrap( AppComponent, [
     { provide: EditEntryService },
     { provide: EditStudentService },
     // { provide: SchoolLogService },
-    { provide: LoggerService }
+    { provide: LoggerService },
+    { provide: SystemMessagesService }
 ]);
