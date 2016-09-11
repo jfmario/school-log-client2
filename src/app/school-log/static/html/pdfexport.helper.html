@@ -19,23 +19,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.0.16/jspdf.plugin.autotable.js"></script>
     <script>
 
-        function pdfExport ( entries )
+        function pdfExport ( entries, queryChildren )
         {
 
             var columns = [
                 { key: 'date', title: 'Date' },
-                { key: 'children', title: 'Students' },
+                { key: 'student', title: 'Student' },
                 { key: 'subject', title: 'Subject' },
                 { key: 'hours', title: 'Hours' },
                 { key: 'description', title: 'Description' }
             ];
             var pdf = new jsPDF ( 'p', 'pt' );
-
+                    
+            var flatEntries = [];
             for ( var i = 0; i < entries.length; ++i )
-                entries [i].date = moment ( entries [i].date )
+            {
+                var dateString = moment ( entries [i].date )
                     .format ( 'YYYY MMMM DD' );
+                for ( var j = 0; j < entries [i].children.length; ++j )
+                {
+                    if ( !queryChildren || queryChildren.indexOf ( entries [i].children [j] ) != -1 )
+                    {
+                        var row = {};
+                        row.date = dateString;
+                        row.student = entries [i].children [j];
+                        row.subject = entries [i].subject;
+                        row.hours = entries [i].hours;
+                        row.description = entries [i].description;
+                        flatEntries.push ( row );
+                    }
+                }
+            }
 
-            pdf.autoTable ( columns, entries );
+            pdf.autoTable ( columns, flatEntries );
             pdf.save ( 'school-log-data.pdf' );
         }
         var QueryString = function () {
@@ -90,7 +106,7 @@
                 },
                 method: 'POST',
                 processData: false,
-                success: function ( data ) { pdfExport ( data ); }
+                success: function ( data ) { pdfExport ( data, queryChildren ); }
             });
     </script>
   </head>
